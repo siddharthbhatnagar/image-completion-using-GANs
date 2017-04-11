@@ -9,5 +9,4 @@ Context Aware Image Inpainting aims to fill a region in an image based on the co
 - DCGAN Architecture: DCGAN model architecture inspired from [Radford et al](https://arxiv.org/pdf/1511.06434.pdf). The input is a noise vector, drawn from some well-known prior distribution (for example: a uniform distribution [−1, 1]), followed by a fully connected layer. This is followed by a series of fractionally-strided convolutions, where the numbers of channels are halved, and image dimension doubles from the previous layer. The output layer is of dimension equal to the size of the image space.
 - Performance Measure: Qualitative
 
-[!Screenshot](https://cloud.githubusercontent.com/assets/21965720/24930883/1c40158
-a-1ed9-11e7-87c3-afded1f927cc.png)
+![Screenshot](https://cloud.githubusercontent.com/assets/21965720/24930883/1c40158a-1ed9-11e7-87c3-afded1f927cc.png)
