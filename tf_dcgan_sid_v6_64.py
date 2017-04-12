@@ -104,6 +104,28 @@ def generator(z):
     print l11
     return l11
 
+def minibatch_discrimination(input_tensor, name, num_kernels=100, kernel_dim=5):
+    with tf.variable_scope(name) as scope:
+        input_shape = input_tensor.get_shape().as_list()
+        print "input-shape" , input_shape
+        batch_size = input_shape[0]
+        print batch_size
+        features = input_shape[1]
+        print features
+        W = tf.get_variable("weight", [features, num_kernels * kernel_dim], initializer=tf.random_normal_initializer(stddev=(0.05)))
+        bias = tf.get_variable("bias", [num_kernels], initializer=tf.constant_initializer(0.0))
+        activation = tf.matmul(input_tensor,W)
+        print activation.get_shape()
+        activation = tf.reshape(activation,[-1,num_kernels,kernel_dim])
+        a1 = tf.expand_dims(activation, 3)
+        a2 = tf.transpose(activation, perm=[1,2,0])
+        a2 = tf.expand_dims(a2, 0)
+        abs_diff = tf.reduce_sum(tf.abs(a1 - a2), reduction_indices=[2])
+        expsum  = tf.reduce_sum(tf.exp(-abs_diff), reduction_indices=[2])
+        expsum = expsum + bias
+        print expsum.get_shape()
+        return tf.concat([input_tensor,expsum],axis=1)
+
 
 # In[11]:
 
@@ -134,12 +156,17 @@ def discriminator(images, reuse=False, alpha=0.2):
 
         #h4 reshape and linear
         l12 = tf.reshape(l11, [-1, 8192]) #l12 = tf.reshape(l11, [32, -1]) #l12 = tf.reshape(l11, [64, -1])
-        l13 = linear(input_tensor=l12, input_dim=8192, output_dim=1, name="d_lin4")
-        print l13.get_shape().as_list()
+        l13 = minibatch_discrimination(l12,name="d_mini",num_kernels=100)
+        print l13.get_shape()
+        input_dim_linear = l13.get_shape().as_list()
+        l14 = linear(input_tensor=l13, input_dim=input_dim_linear[1], output_dim=1, name="d_lin4")
+        print l14.get_shape().as_list()
         #sigmoid
-        l14 = tf.nn.sigmoid(l13)
-        print l14
-        return l14, l13
+        #minibatch discrimination layer
+
+        l15 = tf.nn.sigmoid(l14)
+        print l15
+        return l15, l14
 
 
 
