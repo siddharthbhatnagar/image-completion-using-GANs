@@ -259,15 +259,11 @@ disp_img_noise = np.random.uniform(-1,1,size=[batch_size,100])
 saver = tf.train.Saver()
 f = open('train.log', 'w+')
 iters = 50000
-mode = 1
+GEN_LOSS = 150
 
 for i in range(iters):
     #if (i%100 == 0):  
     #    print i
-    #train discriminator
-    real_images=next(img_input)
-    noise= np.random.uniform(-1,1,size=[batch_size,100])
-    sess.run([dopt],feed_dict={z:noise,images:real_images})
 
     #train discriminator
     real_images=next(img_input)
@@ -283,19 +279,13 @@ for i in range(iters):
     noise= np.random.uniform(-1,1,size=[batch_size,100])
     sess.run([gopt],feed_dict={z:noise})
 
-    if (np.sum(g_loss_all[-100:]) > 150):
-        mode = 2
-    else:
-        mode = 1
-
-    if (mode == 2):
+    if (np.sum(g_loss_all[-100:]) > GEN_LOSS):
         #extra generator update
         noise= np.random.uniform(-1,1,size=[batch_size,100])
         sess.run([gopt],feed_dict={z:noise})
         f.write('Extra Generator in iteration: ' + str(i) + ' sum of last 100: ' + str(np.sum(g_loss_all[-100:])) + '\n')
         print 'Extra Generator in iteration: ' + str(i) + ' sum of last 100: ' + str(np.sum(g_loss_all[-100:]))
 
-    
     #evaluate 
     noise_tr= np.random.uniform(-1,1,size=[batch_size,100])
     real_images=next(img_input)
