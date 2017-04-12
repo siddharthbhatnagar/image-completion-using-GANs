@@ -51,7 +51,7 @@ def conv_2d(input_tensor, input_dim, output_dim, name=None):
 def conv_2dtranspose(input_tensor, input_dim, output_shape,name=None):
     output_dim=output_shape[-1]
     with tf.variable_scope(name):
-        kernel = tf.get_variable("kernel", [5, 5, output_dim, input_dim], initializer=tf.truncated_normal_initializer(stddev=0.02))
+        kernel = tf.get_variable("kernel", [5, 5, output_dim, input_dim], initializer=tf.random_normal_initializer(stddev=0.02))
         bias = tf.get_variable("bias", [output_dim], initializer=tf.constant_initializer(0.0))
         deconv = tf.nn.conv2d_transpose(input_tensor, kernel, output_shape=output_shape, strides=[1, 2, 2, 1],padding='SAME')
         return deconv+bias
@@ -286,16 +286,11 @@ disp_img_noise = np.random.uniform(-1,1,size=[batch_size,100])
 saver = tf.train.Saver()
 f = open('train.log', 'w+')
 iters = 50000
-mode = 1
 
 for i in range(iters):
     #if (i%100 == 0):  
     #    print i
-    #train discriminator
-    real_images=next(img_input)
-    noise= np.random.uniform(-1,1,size=[batch_size,100])
-    sess.run([dopt],feed_dict={z:noise,images:real_images})
-
+    
     #train discriminator
     real_images=next(img_input)
     noise= np.random.uniform(-1,1,size=[batch_size,100])
@@ -311,16 +306,10 @@ for i in range(iters):
     sess.run([gopt],feed_dict={z:noise})
 
     if (np.sum(g_loss_all[-100:]) > 150):
-        mode = 2
-    else:
-        mode = 1
-
-    if (mode == 2):
-        #extra generator update
-        noise= np.random.uniform(-1,1,size=[batch_size,100])
-        sess.run([gopt],feed_dict={z:noise})
-        f.write('Extra Generator in iteration: ' + str(i) + ' sum of last 100: ' + str(np.sum(g_loss_all[-100:])) + '\n')
-        print 'Extra Generator in iteration: ' + str(i) + ' sum of last 100: ' + str(np.sum(g_loss_all[-100:]))
+    	noise= np.random.uniform(-1,1,size=[batch_size,100])
+    	sess.run([gopt],feed_dict={z:noise})
+	f.write('Extra Generator in iteration: ' + str(i) + ' sum of last 100: ' + str(np.sum(g_loss_all[-100:])) + '\n')
+   	print 'Extra Generator in iteration: ' + str(i) + ' sum of last 100: ' + str(np.sum(g_loss_all[-100:]))
 
     
     #evaluate 
@@ -333,7 +322,8 @@ for i in range(iters):
     d_loss_all.append(sess.run([discrim_loss],feed_dict={z:noise_tr, images:real_images}))
     g_loss_all.append(sess.run([gen_loss], feed_dict={z:noise_tr}))
 
-    print i, g_loss_all[-1], d_loss_all[-1]
+    print 'iteration: ' + str(i) + ' g_loss:' + str(g_loss_all[-1]) + ' d_loss:' + str(d_loss_all[-1])
+    #print i, g_loss_all[-1], d_loss_all[-1]
     
     if (i%1000 == 0):
         losses_list = [g_loss_all, d_loss_all]
