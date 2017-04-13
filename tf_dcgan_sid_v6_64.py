@@ -259,7 +259,7 @@ disp_img_noise = np.random.uniform(-1,1,size=[batch_size,100])
 saver = tf.train.Saver()
 f = open('train.log', 'w+')
 iters = 50000
-GEN_LOSS = 150
+GEN_LOSS_LIMIT = 150
 
 for i in range(iters):
     #if (i%100 == 0):  
@@ -279,7 +279,7 @@ for i in range(iters):
     noise= np.random.uniform(-1,1,size=[batch_size,100])
     sess.run([gopt],feed_dict={z:noise})
 
-    if (np.sum(g_loss_all[-100:]) > GEN_LOSS):
+    if (np.sum(g_loss_all[-100:]) > GEN_LOSS_LIMIT):
         #extra generator update
         noise= np.random.uniform(-1,1,size=[batch_size,100])
         sess.run([gopt],feed_dict={z:noise})
