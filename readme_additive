@@ -1,0 +1,3 @@
+initialized minibatch with xavier
+additive gaussian noise in input of discriminator with std = 0.2
+leaky relu for generator
