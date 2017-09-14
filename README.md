@@ -13,9 +13,23 @@ Context Aware Image Inpainting aims to fill a region in an image based on the co
 ![Screenshot](https://cloud.githubusercontent.com/assets/21965720/25057753/9470978c-2140-11e7-9a51-ec6ee19754bc.png)
 
 
-Authors:
+## Authors:
 
 [Aashima Arora](https://github.com/aashima-arora239), [Nishant Puri](https://github.com/nishant-puri), [Siddharth Bhatnagar](https://github.com/siddharthbhatnagar)
 
 
 This is the course project for COMS 4995 - Deep Learning for Computer Vision
+
+## References
+
+* Goodfellow, Ian, et al. "Generative adversarial nets." Advances in neural information processing systems. 2014
+* Radford, Alec, Luke Metz, and Soumith Chintala. "Unsupervised representation learning with deep convolutional generative adversarial networks." arXiv preprint arXiv:1511.06434 2015
+* Salimans, Tim, et al. "Improved techniques for training gans." Advances in Neural Information Processing Systems. 2016
+* Yeh, Raymond, et al. "Semantic Image Inpainting with Perceptual and Contextual Losses." arXiv preprint arXiv:1607.07539 2016
+* Chen, Xi, et al. "Infogan: Interpretable representation learning by information maximizing generative adversarial nets." Advances in Neural Information Processing Systems. 2016
+* Denton, Emily L., Soumith Chintala, and Rob Fergus. "Deep Generative Image Models using a￼ Laplacian Pyramid of Adversarial Networks." Advances in neural information processing systems. 2015
+* https://github.com/jacobgil/keras-dcgan
+* http://bamos.github.io/2016/08/09/deep-completion/
+* https://github.com/soumith/dcgan.torch
+* https://github.com/carpedm20/DCGAN-tensorflow
+* https://github.com/rajathkumarmp/DCGAN
