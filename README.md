@@ -12,3 +12,10 @@ Context Aware Image Inpainting aims to fill a region in an image based on the co
 
 ![Screenshot](https://cloud.githubusercontent.com/assets/21965720/25057753/9470978c-2140-11e7-9a51-ec6ee19754bc.png)
 
+
+Authors:
+
+[Aashima Arora](https://github.com/aashima-arora239), [Nishant Puri](https://github.com/nishant-puri), [Siddharth Bhatnagar](https://github.com/siddharthbhatnagar)
+
+
+This is the course project for COMS 4995 - Deep Learning for Computer Vision
