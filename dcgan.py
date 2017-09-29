@@ -114,6 +114,7 @@ def discriminator(images, reuse=False, alpha=0.2):
 #place holders for images and z
 z = tf.placeholder(tf.float32, [None, 100], name='z')
 G=generator(z)
+
 #placeholder for images
 images = tf.placeholder(tf.float32, [None,64,64,3], name='images')
 alpha = 0.2
@@ -174,13 +175,10 @@ def merge_images(image_batch, size):
 
 
 def save_image(X, iter, fl):
-    #im = Image.fromarray(X)
     name = 'Iteration' + str(iter) + 'time' + str(ti.time()) + '.png'
-    #im.save(name)
     if (fl == False):
         name = 'Random'+name
     size = [8,8]
-    #change X back
     X[0] = (X[0] + 1.)/2
 
     im = merge_images(X[0], size)
@@ -190,11 +188,8 @@ def save_sample(X, iter, fl):
     im = X
     plt.imshow(im)
     plt.axis('on')
-    #plt.show()
     name = 'Iteration' + str(iter) + 'time' + str(ti.time()) + '.png'
     plt.savefig(name)
-
-
 
 disp_img_noise = np.random.uniform(-1,1,size=[batch_size,100])
 saver = tf.train.Saver()
