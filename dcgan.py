@@ -1,8 +1,3 @@
-#XAVIER, 3 DYNAMIC
-# coding: utf-8
-
-# In[1]:
-
 #imports
 import math
 import numpy as np
@@ -18,16 +13,10 @@ import time as ti
 from PIL import Image
 import scipy.misc
 
-
-# In[2]:
-
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 
 def lrelu(x,alpha):
     return tf.maximum(x, alpha*x)
-
-
-# In[4]:
 
 def linear(input_tensor, input_dim, output_dim, name=None):
     with tf.variable_scope(name):
@@ -35,18 +24,12 @@ def linear(input_tensor, input_dim, output_dim, name=None):
         bias = tf.get_variable("bias", [output_dim], initializer=tf.constant_initializer(0.0))
         return tf.matmul(input_tensor, weights) + bias 
 
-
-# In[5]:
-
 def conv_2d(input_tensor, input_dim, output_dim, name=None):
     with tf.variable_scope(name):
         kernel = tf.get_variable("kernel", [5, 5,input_dim, output_dim], initializer=tf.truncated_normal_initializer(stddev=0.02))
         bias = tf.get_variable("bias", [output_dim], initializer=tf.constant_initializer(0.0))
         conv = tf.nn.conv2d(input_tensor, kernel, strides=[1, 2, 2, 1],padding='SAME')
         return conv+bias
-
-
-# In[6]:
 
 def conv_2dtranspose(input_tensor, input_dim, output_shape,name=None):
     output_dim=output_shape[-1]
@@ -56,15 +39,12 @@ def conv_2dtranspose(input_tensor, input_dim, output_shape,name=None):
         deconv = tf.nn.conv2d_transpose(input_tensor, kernel, output_shape=output_shape, strides=[1, 2, 2, 1],padding='SAME')
         return deconv+bias
 
-
-# In[7]:
-
 def batch_norm(input_tensor,name,is_train=True):
     return tf.contrib.layers.batch_norm(input_tensor,decay=0.9, updates_collections=None, epsilon=1e-5, scale=True,    
                                         is_training=is_train, scope=name)
 
-
-# In[8]:
+def preprocessing(image):
+    return image/127.5 - 1;
 
 def show_sample(X):
     im = X
@@ -72,16 +52,9 @@ def show_sample(X):
     plt.axis('on')
     plt.show()  
 
-
-# In[9]:
-
 batch_size = 64
 
-
-# In[10]:
-
 def generator(z):
-#    z = tf.placeholder(tf.float32, [None, 100], name='z')
     l1=linear(input_tensor=z,name="g_lin", input_dim=100, output_dim=1024*4*4)  
     l2= tf.reshape(l1, [-1, 4, 4, 1024])
     l3 = tf.nn.relu(batch_norm(input_tensor=l2,name="g_bn0"))
@@ -103,9 +76,6 @@ def generator(z):
     l11=tf.nn.tanh(l10)
     print l11
     return l11
-
-
-# In[11]:
 
 def discriminator(images, reuse=False, alpha=0.2):
      with tf.variable_scope("discriminator") as scope:
@@ -141,10 +111,7 @@ def discriminator(images, reuse=False, alpha=0.2):
         print l14
         return l14, l13
 
-
-
 #place holders for images and z
-#z = tf.placeholder(tf.float32,name='z')
 z = tf.placeholder(tf.float32, [None, 100], name='z')
 G=generator(z)
 #placeholder for images
@@ -153,24 +120,15 @@ alpha = 0.2
 D1, D1_logits = discriminator(images, False, alpha)
 D2, D2_logits = discriminator(G, True, alpha)
 
-
-# In[13]:
-
-#cretae list of discrim and gen vars
+#create list of discrim and gen vars
 t_vars=tf.trainable_variables()
 for var in t_vars:
     print var.name
 discrim_vars = [var for var in t_vars if 'd_' in var.name]
 gen_vars = [var for var in t_vars if 'g_' in var.name]
 
-
-# In[14]:
-
 for var in discrim_vars:
     print var.name
-
-
-# In[15]:
 
 for var in gen_vars:
     print var.name
@@ -187,19 +145,9 @@ discrim_loss_fake_img = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(l
 discrim_loss = discrim_loss_real_img + discrim_loss_fake_img
 gen_loss = tf.reduce_mean( tf.nn.sigmoid_cross_entropy_with_logits(logits=D2_logits, labels=tf.ones_like(D2_logits)))
 
-
-# In[19]:
-
 #optimizers
 dopt = tf.train.AdamOptimizer(learning_rate=learning_rate, beta1=beta1).minimize(discrim_loss, var_list=discrim_vars)
 gopt = tf.train.AdamOptimizer(learning_rate=learning_rate, beta1=beta1).minimize(gen_loss, var_list=gen_vars)
-
-
-# In[20]:
-
-def preprocessing(image):
-    return image/127.5 - 1;
-
 
 load_img_datagen = ImageDataGenerator(preprocessing_function = preprocessing)
 img_input = load_img_datagen.flow_from_directory(
@@ -208,15 +156,8 @@ img_input = load_img_datagen.flow_from_directory(
         batch_size=batch_size,
         class_mode=None)
 
-
-# In[21]:
-
 sess = tf.Session()
-#sess = tf.InteractiveSession()
 sess.run(tf.global_variables_initializer())
-
-
-# In[22]:
 
 d_loss_all=[]
 g_loss_all=[]
@@ -262,9 +203,6 @@ iters = 50000
 GEN_LOSS_LIMIT = 150
 
 for i in range(iters):
-    #if (i%100 == 0):  
-    #    print i
-
     #train discriminator
     real_images=next(img_input)
     noise= np.random.uniform(-1,1,size=[batch_size,100])
@@ -280,7 +218,7 @@ for i in range(iters):
     sess.run([gopt],feed_dict={z:noise})
 
     if (np.sum(g_loss_all[-100:]) > GEN_LOSS_LIMIT):
-        #extra generator update
+        #adaptive generator update
         noise= np.random.uniform(-1,1,size=[batch_size,100])
         sess.run([gopt],feed_dict={z:noise})
         f.write('Extra Generator in iteration: ' + str(i) + ' sum of last 100: ' + str(np.sum(g_loss_all[-100:])) + '\n')
@@ -303,11 +241,9 @@ for i in range(iters):
         with open('loss.csv', 'w') as loss_file:
             writer = csv.writer(loss_file)
             writer.writerows(losses_list)
-        fake_img = sess.run([G],feed_dict={z:disp_img_noise})#[0][0]
-	#show_sample(fake_img)
+        fake_img = sess.run([G],feed_dict={z:disp_img_noise})
 	save_image(fake_img, i, True)
-        #save_sample(fake_img, i, True)
-	random_noise = np.random.uniform(-1,1,size=[batch_size,100])
+    random_noise = np.random.uniform(-1,1,size=[batch_size,100])
 	save_image(sess.run([G],feed_dict={z:random_noise}), i, False)
         name = 'saved_model.ckpt'
         saver.save(sess,name)
