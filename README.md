@@ -13,6 +13,12 @@ Context Aware Image Inpainting aims to fill a region in an image based on the co
 ![Screenshot](https://cloud.githubusercontent.com/assets/21965720/25057753/9470978c-2140-11e7-9a51-ec6ee19754bc.png)
 
 
+## Some Fun GIFs of our results - 
+
+![alt text](https://raw.githubusercontent.com/siddharthbhatnagar/image-completion-using-GANs/master/face_completion.gif)
+
+![alt text](https://raw.githubusercontent.com/siddharthbhatnagar/image-completion-using-GANs/master/flower_completion.gif)
+
 ## Authors:
 
 [Aashima Arora](https://github.com/aashima-arora239), [Nishant Puri](https://github.com/nishant-puri), [Siddharth Bhatnagar](https://github.com/siddharthbhatnagar)
