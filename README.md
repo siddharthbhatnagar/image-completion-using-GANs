@@ -15,6 +15,8 @@ Context Aware Image Inpainting aims to fill a region in an image based on the co
 
 ## Some Fun GIFs of our results - 
 
+These GIFs show our training process, from the first epoch to the end of training, for a given set of noise points
+
 ![alt text](https://raw.githubusercontent.com/siddharthbhatnagar/image-completion-using-GANs/master/face_completion.gif)
 
 ![alt text](https://raw.githubusercontent.com/siddharthbhatnagar/image-completion-using-GANs/master/flower_completion.gif)
